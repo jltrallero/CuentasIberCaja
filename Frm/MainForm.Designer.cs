@@ -65,6 +65,7 @@ namespace GestorGastos
             gxCategoriaRadar = new ToolStripMenuItem();
             gxCategoriaBurbujas = new ToolStripMenuItem();
             dgv = new DataGridView();
+            agrupadoPorConceptosToolStripMenuItem = new ToolStripMenuItem();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             SuspendLayout();
@@ -96,21 +97,21 @@ namespace GestorGastos
             // importarTorreroToolStripMenuItem
             // 
             importarTorreroToolStripMenuItem.Name = "importarTorreroToolStripMenuItem";
-            importarTorreroToolStripMenuItem.Size = new Size(180, 22);
+            importarTorreroToolStripMenuItem.Size = new Size(169, 22);
             importarTorreroToolStripMenuItem.Text = "Importar Torrero";
             importarTorreroToolStripMenuItem.Click += ImportarTorreroToolStripMenuItem_Click;
             // 
             // importarMamaToolStripMenuItem
             // 
             importarMamaToolStripMenuItem.Name = "importarMamaToolStripMenuItem";
-            importarMamaToolStripMenuItem.Size = new Size(180, 22);
+            importarMamaToolStripMenuItem.Size = new Size(169, 22);
             importarMamaToolStripMenuItem.Text = "Importar Mama";
             importarMamaToolStripMenuItem.Click += ImportarMamaToolStripMenuItem_Click;
             // 
             // importarJoséLuisToolStripMenuItem
             // 
             importarJoséLuisToolStripMenuItem.Name = "importarJoséLuisToolStripMenuItem";
-            importarJoséLuisToolStripMenuItem.Size = new Size(180, 22);
+            importarJoséLuisToolStripMenuItem.Size = new Size(169, 22);
             importarJoséLuisToolStripMenuItem.Text = "Importar José Luis";
             importarJoséLuisToolStripMenuItem.Click += ImportarJoséLuisToolStripMenuItem_Click;
             // 
@@ -170,7 +171,7 @@ namespace GestorGastos
             // VisualizacionTS
             // 
             VisualizacionTS.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            VisualizacionTS.DropDownItems.AddRange(new ToolStripItem[] { GraficoTS, gxCategoriasMenu });
+            VisualizacionTS.DropDownItems.AddRange(new ToolStripItem[] { GraficoTS, gxCategoriasMenu, agrupadoPorConceptosToolStripMenuItem });
             VisualizacionTS.Image = (Image)resources.GetObject("VisualizacionTS.Image");
             VisualizacionTS.ImageTransparentColor = System.Drawing.Color.Magenta;
             VisualizacionTS.Name = "VisualizacionTS";
@@ -181,7 +182,7 @@ namespace GestorGastos
             // 
             GraficoTS.DropDownItems.AddRange(new ToolStripItem[] { gxMesMenuLinea, gxMesMenuBarrasH, gxMesMenuBarrasV, gxMesMenuCircular, gxMesMenuAreas, gxMesMenuDispersion, gxMesMenuRadar, gxMesMenuBurbujas });
             GraficoTS.Name = "GraficoTS";
-            GraficoTS.Size = new Size(190, 22);
+            GraficoTS.Size = new Size(206, 22);
             GraficoTS.Text = "Gráfico por meses";
             GraficoTS.Click += GraficoTS_Click;
             // 
@@ -245,8 +246,8 @@ namespace GestorGastos
             // 
             gxCategoriasMenu.DropDownItems.AddRange(new ToolStripItem[] { gxCategoriaMenuLinea, gxCategoriaBarrasH, gxCategoriaBarrasV, gxCategoriaCircular, gxCategoriaAreas, gxCategoriaDispersion, gxCategoriaRadar, gxCategoriaBurbujas });
             gxCategoriasMenu.Name = "gxCategoriasMenu";
-            gxCategoriasMenu.Size = new Size(190, 22);
-            gxCategoriasMenu.Text = "Gráfico por categorías";
+            gxCategoriasMenu.Size = new Size(206, 22);
+            gxCategoriasMenu.Text = "Gráfico por conceptos";
             // 
             // gxCategoriaMenuLinea
             // 
@@ -313,6 +314,13 @@ namespace GestorGastos
             dgv.Size = new Size(800, 425);
             dgv.TabIndex = 3;
             // 
+            // agrupadoPorConceptosToolStripMenuItem
+            // 
+            agrupadoPorConceptosToolStripMenuItem.Name = "agrupadoPorConceptosToolStripMenuItem";
+            agrupadoPorConceptosToolStripMenuItem.Size = new Size(206, 22);
+            agrupadoPorConceptosToolStripMenuItem.Text = "Agrupado por conceptos";
+            agrupadoPorConceptosToolStripMenuItem.Click += AgrupadoPorConceptosToolStripMenuItem_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -364,5 +372,6 @@ namespace GestorGastos
         private ToolStripMenuItem importarTorreroToolStripMenuItem;
         private ToolStripMenuItem importarMamaToolStripMenuItem;
         private ToolStripMenuItem importarJoséLuisToolStripMenuItem;
+        private ToolStripMenuItem agrupadoPorConceptosToolStripMenuItem;
     }
 }

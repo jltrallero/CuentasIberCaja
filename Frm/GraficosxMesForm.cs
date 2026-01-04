@@ -3,7 +3,6 @@ using CuentasIbercaja.Models;
 using System.ComponentModel;
 using System.Data;
 using System.Windows.Forms.DataVisualization.Charting;
-using System.Linq;
 
 namespace GestorGastos.Frm
 {
@@ -111,7 +110,7 @@ namespace GestorGastos.Frm
             {
                 Series serie = new($"Año {año}")
                 {
-                    ChartType = MapearTipoGrafico(_tipo),
+                    ChartType = GraficosxConceptoFormHelpers.MapearTipoGrafico(_tipo),
                     BorderWidth = 2
                 };
 
@@ -142,22 +141,6 @@ namespace GestorGastos.Frm
 
             // Agregar el gráfico al panel
             panel.Controls.Add(chartComparativo);
-        }
-
-        private static SeriesChartType MapearTipoGrafico(TipoGrafico tipo)
-        {
-            return tipo switch
-            {
-                TipoGrafico.Linea => SeriesChartType.Line,
-                TipoGrafico.Barra => SeriesChartType.Column,
-                TipoGrafico.Columna => SeriesChartType.Column,
-                TipoGrafico.Circular => SeriesChartType.Pie,
-                TipoGrafico.Area => SeriesChartType.Area,
-                TipoGrafico.Punto => SeriesChartType.Point,
-                TipoGrafico.Radar => SeriesChartType.Radar,
-                TipoGrafico.Burbuja => SeriesChartType.Bubble,                
-                _ => SeriesChartType.Column // Valor predeterminado
-            };
         }
     }
 }

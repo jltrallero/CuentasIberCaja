@@ -3,16 +3,15 @@ using CuentasIbercaja.Models;
 using System.ComponentModel;
 using System.Data;
 using System.Windows.Forms.DataVisualization.Charting;
-using System.Linq;
 
 namespace GestorGastos.Frm
 {
-    public partial class GraficosxCategoriaForm : Form
+    public partial class GraficosxConceptoForm : Form
     {
         private readonly IEnumerable<Expense> expenses;
         private readonly TipoGrafico _tipo;
 
-        public GraficosxCategoriaForm(BindingList<Expense> datos, TipoGrafico tipo)
+        public GraficosxConceptoForm(BindingList<Expense> datos, TipoGrafico tipo)
         {
             InitializeComponent();
             expenses = datos;
@@ -84,63 +83,66 @@ namespace GestorGastos.Frm
         {
             var valores = datos
                 .Where(e => e.EsIngreso == esIngreso)
-                .GroupBy(e => e.Concepto) // Agrupar por concepto
+                .GroupBy(e => new { e.Concepto, e.Fecha.Year }) // Agrupar por concepto y año
                 .Select(g => new
                 {
-                    Concepto = g.Key,
+                    Concepto = g.Key.Concepto ?? "Sin Concepto", // Manejar conceptos nulos
+                    Año = g.Key.Year,
                     Total = g.Sum(x => x.Importe)
                 })
-                .OrderBy(x => x.Concepto)
                 .ToList();
 
+            // Obtener todos los conceptos únicos
+            var conceptos = valores.Select(v => v.Concepto).Distinct().OrderBy(c => c).ToList();
+
             Chart chartComparativo = new() { Dock = DockStyle.Fill };
-            chartComparativo.ChartAreas.Add(new ChartArea("ComparativoArea"));
+            ChartArea chartArea = new("ComparativoArea");
 
-            // Crear una serie para los conceptos
-            Series serie = new("Conceptos")
-            {
-                ChartType = MapearTipoGrafico(_tipo),
-                BorderWidth = 2
-            };
+            // Configurar el formato del eje Y para mostrar 2 decimales
+            chartArea.AxisY.LabelStyle.Format = "N2";
+            chartArea.AxisY.Title = "Importe (en €)";
+            chartArea.AxisX.Title = "Conceptos";
+            chartArea.AxisX.Interval = 1; // Asegurar que se muestren todas las etiquetas en el eje X
 
-            foreach (var valor in valores)
+            chartComparativo.ChartAreas.Add(chartArea);
+
+            // Crear una serie para cada año
+            foreach (var año in valores.Select(v => v.Año).Distinct())
             {
-                serie.Points.AddXY(valor.Concepto, valor.Total);
+                Series serie = new($"Año: {año}")
+                {
+                    ChartType = GraficosxConceptoFormHelpers.MapearTipoGrafico(_tipo),
+                    BorderWidth = 2
+                };
+
+                // Agregar un punto para cada concepto, incluso si el valor es 0
+                foreach (var concepto in conceptos)
+                {
+                    var total = valores
+                        .Where(v => v.Año == año && v.Concepto == concepto)
+                        .Sum(v => v.Total);
+
+                    serie.Points.AddXY(concepto, total);
+                }
+
+                chartComparativo.Series.Add(serie);
             }
-
-            chartComparativo.Series.Add(serie);
 
             // Configurar la leyenda
             Legend legend = new()
             {
                 Name = "ComparativoLegend",
-                Title = "Conceptos",
+                Title = "Años",
                 Docking = Docking.Top
             };
             chartComparativo.Legends.Add(legend);
 
             // Configurar el título del gráfico
-            string titulo = esIngreso ? "Comparativa de Ingresos por Concepto" : "Comparativa de Gastos por Concepto";
+            string titulo = esIngreso ? "Comparativa de Ingresos por Concepto y Año" : "Comparativa de Gastos por Concepto y Año";
             chartComparativo.Titles.Add(new Title(titulo, Docking.Top, new Font("Arial", 12, FontStyle.Bold), Color.Black));
 
             // Agregar el gráfico al panel
             panel.Controls.Add(chartComparativo);
-        }
-
-        private static SeriesChartType MapearTipoGrafico(TipoGrafico tipo)
-        {
-            return tipo switch
-            {
-                TipoGrafico.Linea => SeriesChartType.Line,
-                TipoGrafico.Barra => SeriesChartType.Column,
-                TipoGrafico.Columna => SeriesChartType.Column,
-                TipoGrafico.Circular => SeriesChartType.Pie,
-                TipoGrafico.Area => SeriesChartType.Area,
-                TipoGrafico.Punto => SeriesChartType.Point,
-                TipoGrafico.Radar => SeriesChartType.Radar,
-                TipoGrafico.Burbuja => SeriesChartType.Bubble,                
-                _ => SeriesChartType.Column // Valor predeterminado
-            };
         }
     }
 }

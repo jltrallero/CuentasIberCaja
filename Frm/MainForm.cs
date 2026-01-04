@@ -135,46 +135,46 @@ namespace GestorGastos
             dgv.DataSource = _binding;
         }
 
-            // Extraer la lógica común de importación a un método privado para evitar duplicidad y cumplir S4144
-            private async Task ImportarDesdeArchivoAsync(TipoCuenta cuenta)
+        // Extraer la lógica común de importación a un método privado para evitar duplicidad y cumplir S4144
+        private async Task ImportarDesdeArchivoAsync(TipoCuenta cuenta)
+        {
+            string titulo = cuenta switch
             {
-                string titulo = cuenta switch
+                TipoCuenta.None => string.Empty,
+                TipoCuenta.Torrero => "Importar archivo de Torrero",
+                TipoCuenta.Mama => "Importar archivo de Mama",
+                TipoCuenta.JL => "Importar archivo de José Luis",
+                _ => string.Empty,
+            };
+
+            using var ofd = new OpenFileDialog { Filter = "Excel files|*.xlsx;*.xls", Multiselect = true, Title = titulo };
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+
+            int totalImportados = 0;
+
+            foreach (var fileName in ofd.FileNames)
+            {
+                try
                 {
-                    TipoCuenta.None => string.Empty,
-                    TipoCuenta.Torrero => "Importar archivo de Torrero",
-                    TipoCuenta.Mama => "Importar archivo de Mama",
-                    TipoCuenta.JL => "Importar archivo de José Luis",
-                    _ => string.Empty,
-                };
-
-                using var ofd = new OpenFileDialog { Filter = "Excel files|*.xlsx;*.xls", Multiselect = true, Title = titulo };
-                if (ofd.ShowDialog() != DialogResult.OK) return;
-
-                int totalImportados = 0;
-
-                foreach (var fileName in ofd.FileNames)
-                {
-                    try
+                    var imported = ExcelImporter.Import(cuenta, fileName).ToList();
+                    foreach (var ex in imported)
                     {
-                        var imported = ExcelImporter.Import(cuenta, fileName).ToList();
-                        foreach (var ex in imported)
-                        {
-                            _binding.Insert(0, ex);
-                            using Task<long> idTask = _repo.InsertAsync(ex);
-                            idTask.Wait();
-                            ex.Id = idTask.Result;
-                        }
+                        _binding.Insert(0, ex);
+                        using Task<long> idTask = _repo.InsertAsync(ex);
+                        idTask.Wait();
+                        ex.Id = idTask.Result;
+                    }
 
-                        totalImportados += imported.Count;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error al importar el archivo {fileName}: {ex.Message}", "Error de Importación", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    totalImportados += imported.Count;
                 }
-
-                MessageBox.Show($"Importadas {totalImportados} filas en total.", "Importación", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al importar el archivo {fileName}: {ex.Message}", "Error de Importación", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
+
+            MessageBox.Show($"Importadas {totalImportados} filas en total.", "Importación", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
         private async void GuardarDatosBD_Click(object? sender, EventArgs e)
         {
@@ -229,7 +229,7 @@ namespace GestorGastos
         {
             if (sender is ToolStripMenuItem item && item.Tag is TipoGrafico tipo)
             {
-                var F = new GraficosxCategoriaForm(_binding, tipo);
+                var F = new GraficosxConceptoForm(_binding, tipo);
                 F.ShowDialog();
             }
         }
@@ -247,6 +247,12 @@ namespace GestorGastos
         private async void ImportarJoséLuisToolStripMenuItem_Click(object sender, EventArgs e)
         {
             await ImportarDesdeArchivoAsync(TipoCuenta.JL);
+        }
+
+        private void AgrupadoPorConceptosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var F = new ResumenConceptosForm(_binding);
+            F.ShowDialog();
         }
     }
 }
