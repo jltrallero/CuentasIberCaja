@@ -38,6 +38,9 @@
             splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.Location = new Point(0, 0);
             splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            //             
             splitContainer1.Size = new Size(1184, 603);
             splitContainer1.SplitterDistance = 618;
             splitContainer1.TabIndex = 0;

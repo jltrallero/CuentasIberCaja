@@ -17,54 +17,95 @@ namespace GestorGastos.Frm
             InitializeComponent();
             expenses = [.. datos];
             _tipo = tipo;
-            CrearGraficoIngresos();
-            CrearGraficoGastos();
+            CrearGraficoComparativo(true);  // Para ingresos
+            CrearGraficoComparativo(false); // Para gastos
         }
 
-        private void CrearGraficoIngresos()
+        private void CrearGraficoComparativo(bool esIngreso)
         {
             var valores = expenses
-                .Where(e => e.EsIngreso)
+                .Where(e => e.EsIngreso == esIngreso)
                 .GroupBy(e => new { e.Fecha.Year, e.Fecha.Month })
                 .Select(g => new
                 {
-                    Periodo = $"{g.Key.Year}-{g.Key.Month:D2}",
+                    Año = g.Key.Year,
+                    Mes = g.Key.Month,
                     Total = g.Sum(x => x.Importe)
                 })
-                .OrderBy(x => x.Periodo)
-                .ToDictionary(x => x.Periodo, x => x.Total);
+                .OrderBy(x => x.Mes)
+                .ThenBy(x => x.Año)
+                .ToList();
 
-            Chart chartIngresos = new() { Dock = DockStyle.Fill };
-            chartIngresos.ChartAreas.Add(new ChartArea("GastosArea"));
-            GraficosHelpers.ConfigurarChart(chartIngresos,
-                             _tipo,
-                            "Ingresos por Mes",
-                            valores);
+            // Crear un diccionario para agrupar los datos por mes y luego por año
+            var datosPorMes = valores
+                .GroupBy(v => v.Mes)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.ToDictionary(v => v.Año, v => v.Total)
+                );
 
-            splitContainer1.Panel1.Controls.Add(chartIngresos);
+            Chart chartComparativo = new() { Dock = DockStyle.Fill };
+            chartComparativo.ChartAreas.Add(new ChartArea("ComparativoArea"));
+
+            // Configurar las series para cada año
+            foreach (var año in valores.Select(v => v.Año).Distinct().OrderBy(a => a))
+            {
+                Series serie = new($"Año {año}")
+                {
+                    ChartType = MapearTipoGrafico(_tipo), // Aplicar TipoGrafico
+                    BorderWidth = 2
+                };
+
+                foreach (var mes in Enumerable.Range(1, 12))
+                {
+                    var total = datosPorMes.ContainsKey(mes) && datosPorMes[mes].ContainsKey(año)
+                        ? datosPorMes[mes][año]
+                        : 0;
+
+                    serie.Points.AddXY(mes, total);
+                }
+
+                chartComparativo.Series.Add(serie);
+            }
+
+            // Configurar la leyenda
+            Legend legend = new()
+            {
+                Name = "ComparativoLegend",
+                Title = "Años",
+                Docking = Docking.Top
+            };
+            chartComparativo.Legends.Add(legend);
+
+            // Configurar el título del gráfico
+            string titulo = esIngreso ? "Comparativa de Ingresos por Mes y Año" : "Comparativa de Gastos por Mes y Año";
+            chartComparativo.Titles.Add(new Title(titulo, Docking.Top, new Font("Arial", 12, FontStyle.Bold), Color.Black));
+
+            // Añadir el gráfico al panel correspondiente
+            if (esIngreso)
+            {
+                splitContainer1.Panel1.Controls.Add(chartComparativo);
+            }
+            else
+            {
+                splitContainer1.Panel2.Controls.Add(chartComparativo);
+            }
         }
 
-        private void CrearGraficoGastos()
+        private static SeriesChartType MapearTipoGrafico(TipoGrafico tipo)
         {
-            var valores = expenses
-                .Where(e => !e.EsIngreso)
-                .GroupBy(e => new { e.Fecha.Year, e.Fecha.Month })
-                .Select(g => new
-                {
-                    Periodo = $"{g.Key.Year}-{g.Key.Month:D2}",
-                    Total = g.Sum(x => x.Importe)
-                })
-                .OrderBy(x => x.Periodo)
-                .ToDictionary(x => x.Periodo, x => x.Total);
-
-            Chart chartGastos = new() { Dock = DockStyle.Fill };
-            chartGastos.ChartAreas.Add(new ChartArea("GastosArea"));
-            GraficosHelpers.ConfigurarChart(chartGastos,
-                            _tipo,
-                            "Gastos por Mes",
-                            valores);
-
-            splitContainer1.Panel2.Controls.Add(chartGastos);
+            return tipo switch
+            {
+                TipoGrafico.Linea => SeriesChartType.Line,
+                TipoGrafico.Barra => SeriesChartType.Column,
+                TipoGrafico.Columna => SeriesChartType.Column,
+                TipoGrafico.Circular => SeriesChartType.Pie,
+                TipoGrafico.Area => SeriesChartType.Area,
+                TipoGrafico.Punto => SeriesChartType.Point,
+                TipoGrafico.Radar => SeriesChartType.Radar,
+                TipoGrafico.Burbuja => SeriesChartType.Bubble,                
+                _ => SeriesChartType.Column // Valor predeterminado
+            };
         }
     }
 }

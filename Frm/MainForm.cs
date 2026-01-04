@@ -135,31 +135,46 @@ namespace GestorGastos
             dgv.DataSource = _binding;
         }
 
-        // Extraer la lógica común de importación a un método privado para evitar duplicidad y cumplir S4144
-        private async Task ImportarDesdeArchivoAsync(TipoCuenta cuenta)
-        {
-            string titulo = cuenta switch
+            // Extraer la lógica común de importación a un método privado para evitar duplicidad y cumplir S4144
+            private async Task ImportarDesdeArchivoAsync(TipoCuenta cuenta)
             {
-                TipoCuenta.None => string.Empty,
-                TipoCuenta.Torrero => "Importar archivo de Torrero",
-                TipoCuenta.Mama => "Importar archivo de Mama",
-                TipoCuenta.JL => "Importar archivo de José Luis",
-                _ => string.Empty,
-            };
-            using var ofd = new OpenFileDialog { Filter = "Excel files|*.xlsx;*.xls", Multiselect = true, Title = titulo };
-            if (ofd.ShowDialog() != DialogResult.OK) return;
+                string titulo = cuenta switch
+                {
+                    TipoCuenta.None => string.Empty,
+                    TipoCuenta.Torrero => "Importar archivo de Torrero",
+                    TipoCuenta.Mama => "Importar archivo de Mama",
+                    TipoCuenta.JL => "Importar archivo de José Luis",
+                    _ => string.Empty,
+                };
 
-            var imported = ExcelImporter.Import(cuenta, ofd.FileName).ToList();
-            foreach (var ex in imported)
-            {
-                _binding.Insert(0, ex);
-                using Task<long> idTask = _repo.InsertAsync(ex);
-                idTask.Wait();
-                ex.Id = idTask.Result;
+                using var ofd = new OpenFileDialog { Filter = "Excel files|*.xlsx;*.xls", Multiselect = true, Title = titulo };
+                if (ofd.ShowDialog() != DialogResult.OK) return;
+
+                int totalImportados = 0;
+
+                foreach (var fileName in ofd.FileNames)
+                {
+                    try
+                    {
+                        var imported = ExcelImporter.Import(cuenta, fileName).ToList();
+                        foreach (var ex in imported)
+                        {
+                            _binding.Insert(0, ex);
+                            using Task<long> idTask = _repo.InsertAsync(ex);
+                            idTask.Wait();
+                            ex.Id = idTask.Result;
+                        }
+
+                        totalImportados += imported.Count;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al importar el archivo {fileName}: {ex.Message}", "Error de Importación", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
+                MessageBox.Show($"Importadas {totalImportados} filas en total.", "Importación", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            MessageBox.Show($"Importadas {imported.Count} filas.", "Importación", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
 
         private async void GuardarDatosBD_Click(object? sender, EventArgs e)
         {

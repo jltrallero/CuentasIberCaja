@@ -26,7 +26,6 @@ namespace CuentasIbercaja.Data
                     Concepto TEXT,
                     Descripcion TEXT,
                     Referencia TEXT,
-                    NDocumento TEXT,
                     Importe FLOAT,
                     TipoCuenta TEXT,
                     EsIngreso INTEGER DEFAULT 0
@@ -45,9 +44,9 @@ namespace CuentasIbercaja.Data
             using var conn = new SqliteConnection(_connectionString);
             var sql = @"
                 INSERT INTO Expenses
-                    (NumOrden, Fecha, Concepto, Descripcion, Referencia, NDocumento, Importe, TipoCuenta, EsIngreso)
+                    (NumOrden, Fecha, Concepto, Descripcion, Referencia, Importe, TipoCuenta, EsIngreso)
                 VALUES
-                    (@NumOrden, @Fecha, @Concepto, @Descripcion, @Referencia, @NDocumento, @Importe, @TipoCuenta, @EsIngreso);
+                    (@NumOrden, @Fecha, @Concepto, @Descripcion, @Referencia, @Importe, @TipoCuenta, @EsIngreso);
                 SELECT last_insert_rowid();";
             return await conn.ExecuteScalarAsync<long>(sql, e);
         }
@@ -62,7 +61,6 @@ namespace CuentasIbercaja.Data
                      Concepto = @Concepto,
                      Descripcion = @Descripcion,
                      Referencia = @Referencia,
-                     NDocumento = @NDocumento,
                      Importe = @Importe,
                      TipoCuenta = @TipoCuenta,
                      EsIngreso = @EsIngreso
