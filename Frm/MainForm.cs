@@ -138,7 +138,6 @@ namespace GestorGastos
         // Extraer la lógica común de importación a un método privado para evitar duplicidad y cumplir S4144
         private async Task ImportarDesdeArchivoAsync(TipoCuenta cuenta)
         {
-            await LimpiarDatos();
             string titulo = cuenta switch
             {
                 TipoCuenta.None => string.Empty,

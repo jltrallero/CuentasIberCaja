@@ -6,31 +6,109 @@ namespace CuentasIbercaja.Utils
 {
     public static class ExcelImporter
     {
-        private static void AnadirElementos(TipoCuenta cuenta, List<Expense> list, IEnumerable<IXLRow> rows)
+        private static int SafeInt(IXLRow row, int index)
         {
-            foreach (var r in rows)
+            if (index > 0)
+            {
+                var text = row.Cell(index).GetString();
+                if (int.TryParse(text, out int value))
+                    return value;
+            }
+            return 0;
+        }
+
+        private static string SafeString(IXLRow row, int index)
+        {
+            return index > 0 ? row.Cell(index).GetString() : string.Empty;
+        }
+
+        private static int GetColumnIndex(IXLRow headerRow, params string[] names)
+        {
+            return headerRow.Cells()
+                .Where(cell => names.Any(name => string.Equals(cell.GetString().Trim(), name, StringComparison.OrdinalIgnoreCase)))
+                .Select(cell => cell.Address.ColumnNumber)
+                .DefaultIfEmpty(-1)
+                .First();
+        }
+
+        private static void AnadirElementos(TipoCuenta cuenta, List<Expense> list, IXLWorksheet worksheet)
+        {
+            // 1. Encontrar la fila de encabezados
+            var headerRow = FindHeaderRow(worksheet);
+            if (headerRow == null)
+                return; // No se puede procesar
+
+            // 2. Obtener índices de columnas
+            var numOrdenIndex = GetColumnIndex(headerRow, "Nº Orden");
+            var fechaIndex = GetColumnIndex(headerRow, "F.Operación", "Fecha Operación", "Fecha Oper");
+            var conceptoIndex = GetColumnIndex(headerRow, "Concepto");
+            var descripcionIndex = GetColumnIndex(headerRow, "Descripción");
+            var referenciaIndex = GetColumnIndex(headerRow, "N.Documento", "Referencia");
+            var importeIndex = GetColumnIndex(headerRow, "Importe");
+
+            // 3. Filas de datos: todas las que están debajo del encabezado
+            var dataRows = worksheet.RowsUsed().Where(r => r.RowNumber() > headerRow.RowNumber());
+
+            var indexnumorden = 1;
+            var numorden = 1;
+            var conceptoBuilder = new System.Text.StringBuilder();
+
+            // 4. Procesar datos
+            foreach (var r in dataRows)
             {
                 try
                 {
-                    var importe = ParseDecimalSafe(r.Cell(7).GetString()); // Importe
+                    decimal importe = 0;
+                    if (importeIndex > 0)
+                        importe = ParseDecimalSafe(r.Cell(importeIndex).GetString());
+
+                    // Acumular descripción
+                    conceptoBuilder.Append(" ");
+                    conceptoBuilder.Append(SafeString(r, conceptoIndex));
+
+                    // Si el importe es 0, concatenamos concepto y pasamos al siguiente registro
+                    if (importe == 0)
+                        continue;
+
+                    numorden = SafeInt(r, numOrdenIndex);
+                    if (numorden == 0)
+                        numorden = indexnumorden;
 
                     var e = new Expense
                     {
-                        NumOrden = int.Parse(r.Cell(1).GetString()),   // Nº Orden
-                        Fecha = ParseDate(r.Cell(2).GetString()),      // Fecha Operación
-                        Concepto = r.Cell(4).GetString(),              // Concepto
-                        Descripcion = r.Cell(5).GetString(),           // Descripción
-                        Referencia = r.Cell(6).GetString(),            // Referencia
-                        Importe = (float)importe,                      // Importe
+                        NumOrden = numorden,
+                        Fecha = ParseDate(r.Cell(fechaIndex).GetString()),
+                        Concepto = conceptoBuilder.ToString(),
+                        Descripcion = SafeString(r, descripcionIndex),
+                        Referencia = SafeString(r, referenciaIndex),
+                        Importe = (float)importe,
                         TipoCuenta = cuenta
                     };
+
                     list.Add(e);
+                    conceptoBuilder.Clear();
                 }
                 catch
                 {
                     // ignorar filas mal formadas
                 }
+
+                indexnumorden++;
             }
+        }
+
+        private static IXLRow? FindHeaderRow(IXLWorksheet sheet)
+        {
+            return sheet.RowsUsed()
+                .FirstOrDefault(row =>
+                {
+                    var cells = row.Cells().Select(c => c.GetString().Trim()).ToList();
+                    return cells.Any(c =>
+                        c.Equals("Nº Orden", StringComparison.OrdinalIgnoreCase) ||
+                        c.Equals("F.Operación", StringComparison.OrdinalIgnoreCase) ||
+                        c.Equals("Concepto", StringComparison.OrdinalIgnoreCase) ||
+                        c.Equals("Importe", StringComparison.OrdinalIgnoreCase));
+                });
         }
 
         public static IEnumerable<Expense> Import(TipoCuenta cuenta, string fileName)
@@ -39,9 +117,8 @@ namespace CuentasIbercaja.Utils
             using var wb = new XLWorkbook(fileName);
 
             var ws = wb.Worksheets.ElementAt(0);
-            var rows = ws.RowsUsed().Skip(1); // saltar cabeceras
 
-            AnadirElementos(cuenta, list, rows);
+            AnadirElementos(cuenta, list, ws);
 
             return list;
         }

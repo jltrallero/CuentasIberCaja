@@ -1,4 +1,5 @@
 namespace CuentasIbercaja.Models
 {
-    public enum TipoCuenta { None, Torrero, Mama, JL }
+    public enum TipoCuenta
+    { None, Torrero, Mama, JL }
 }

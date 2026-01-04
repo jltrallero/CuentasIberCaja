@@ -10,6 +10,8 @@ namespace CuentasIbercaja.Models
 
         public TipoCuenta TipoCuenta { get; set; } = TipoCuenta.None;
 
+        public string NDocumento { get; set; } = string.Empty;
+
         public string Concepto { get; set; } = string.Empty;
 
         public string Descripcion { get; set; } = string.Empty;

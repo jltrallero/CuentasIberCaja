@@ -8,7 +8,7 @@ namespace CuentasIbercaja.Data
     {
         private readonly string _connectionString;
 
-        public ExpenseRepository(string databaseFile = "expenses.db")
+        public ExpenseRepository(string databaseFile = "Movimientos.db")
         {
             _connectionString = $"Data Source={databaseFile}";
             EnsureCreated();
@@ -21,12 +21,13 @@ namespace CuentasIbercaja.Data
             var sql = @"
                 CREATE TABLE IF NOT EXISTS Expenses (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    NumOrden INTEGER,                    
+                    NumOrden INTEGER,
                     Fecha TEXT NOT NULL,
                     Concepto TEXT,
                     Descripcion TEXT,
                     Referencia TEXT,
-                    Importe FLOAT,                    
+                    NDocumento TEXT,
+                    Importe FLOAT,
                     TipoCuenta TEXT,
                     EsIngreso INTEGER DEFAULT 0
                 );";
@@ -44,9 +45,9 @@ namespace CuentasIbercaja.Data
             using var conn = new SqliteConnection(_connectionString);
             var sql = @"
                 INSERT INTO Expenses
-                    (NumOrden, Fecha, Concepto, Descripcion, Referencia, Importe, TipoCuenta, EsIngreso)
+                    (NumOrden, Fecha, Concepto, Descripcion, Referencia, NDocumento, Importe, TipoCuenta, EsIngreso)
                 VALUES
-                    (@NumOrden, @Fecha, @Concepto, @Descripcion, @Referencia, @Importe, @TipoCuenta, @EsIngreso);
+                    (@NumOrden, @Fecha, @Concepto, @Descripcion, @Referencia, @NDocumento, @Importe, @TipoCuenta, @EsIngreso);
                 SELECT last_insert_rowid();";
             return await conn.ExecuteScalarAsync<long>(sql, e);
         }
@@ -61,6 +62,7 @@ namespace CuentasIbercaja.Data
                      Concepto = @Concepto,
                      Descripcion = @Descripcion,
                      Referencia = @Referencia,
+                     NDocumento = @NDocumento,
                      Importe = @Importe,
                      TipoCuenta = @TipoCuenta,
                      EsIngreso = @EsIngreso
