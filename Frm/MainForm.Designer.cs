@@ -64,8 +64,9 @@ namespace GestorGastos
             gxCategoriaDispersion = new ToolStripMenuItem();
             gxCategoriaRadar = new ToolStripMenuItem();
             gxCategoriaBurbujas = new ToolStripMenuItem();
-            dgv = new DataGridView();
             agrupadoPorConceptosToolStripMenuItem = new ToolStripMenuItem();
+            dgv = new DataGridView();
+            dashboardInteractivoToolStripMenuItem = new ToolStripMenuItem();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             SuspendLayout();
@@ -171,7 +172,7 @@ namespace GestorGastos
             // VisualizacionTS
             // 
             VisualizacionTS.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            VisualizacionTS.DropDownItems.AddRange(new ToolStripItem[] { GraficoTS, gxCategoriasMenu, agrupadoPorConceptosToolStripMenuItem });
+            VisualizacionTS.DropDownItems.AddRange(new ToolStripItem[] { GraficoTS, gxCategoriasMenu, agrupadoPorConceptosToolStripMenuItem, dashboardInteractivoToolStripMenuItem });
             VisualizacionTS.Image = (Image)resources.GetObject("VisualizacionTS.Image");
             VisualizacionTS.ImageTransparentColor = System.Drawing.Color.Magenta;
             VisualizacionTS.Name = "VisualizacionTS";
@@ -305,6 +306,13 @@ namespace GestorGastos
             gxCategoriaBurbujas.Text = "Gráfico de burbujas";
             gxCategoriaBurbujas.Click += GraficoTSCategorias_Click;
             // 
+            // agrupadoPorConceptosToolStripMenuItem
+            // 
+            agrupadoPorConceptosToolStripMenuItem.Name = "agrupadoPorConceptosToolStripMenuItem";
+            agrupadoPorConceptosToolStripMenuItem.Size = new Size(206, 22);
+            agrupadoPorConceptosToolStripMenuItem.Text = "Agrupado por conceptos";
+            agrupadoPorConceptosToolStripMenuItem.Click += AgrupadoPorConceptosToolStripMenuItem_Click;
+            // 
             // dgv
             // 
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -314,12 +322,12 @@ namespace GestorGastos
             dgv.Size = new Size(800, 425);
             dgv.TabIndex = 3;
             // 
-            // agrupadoPorConceptosToolStripMenuItem
+            // dashboardInteractivoToolStripMenuItem
             // 
-            agrupadoPorConceptosToolStripMenuItem.Name = "agrupadoPorConceptosToolStripMenuItem";
-            agrupadoPorConceptosToolStripMenuItem.Size = new Size(206, 22);
-            agrupadoPorConceptosToolStripMenuItem.Text = "Agrupado por conceptos";
-            agrupadoPorConceptosToolStripMenuItem.Click += AgrupadoPorConceptosToolStripMenuItem_Click;
+            dashboardInteractivoToolStripMenuItem.Name = "dashboardInteractivoToolStripMenuItem";
+            dashboardInteractivoToolStripMenuItem.Size = new Size(206, 22);
+            dashboardInteractivoToolStripMenuItem.Text = "Dashboard Interactivo";
+            dashboardInteractivoToolStripMenuItem.Click += DashboardInteractivoToolStripMenuItem_Click;
             // 
             // MainForm
             // 
@@ -373,5 +381,6 @@ namespace GestorGastos
         private ToolStripMenuItem importarMamaToolStripMenuItem;
         private ToolStripMenuItem importarJoséLuisToolStripMenuItem;
         private ToolStripMenuItem agrupadoPorConceptosToolStripMenuItem;
+        private ToolStripMenuItem dashboardInteractivoToolStripMenuItem;
     }
 }

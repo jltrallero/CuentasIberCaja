@@ -254,5 +254,11 @@ namespace GestorGastos
             var F = new ResumenConceptosForm(_binding);
             F.ShowDialog();
         }
+
+        private void DashboardInteractivoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var F = new DashboardForm(_binding);
+            F.ShowDialog();
+        }
     }
 }

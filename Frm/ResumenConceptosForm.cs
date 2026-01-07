@@ -26,7 +26,7 @@ namespace CuentasIbercaja.Frm
                 if (tipoCuenta == TipoCuenta.None) continue;
 
                 // Simplificar la creación de TabPage usando inicializador de objeto
-                TabPage tabPage = new TabPage($"{tipoCuenta}")
+                TabPage tabPage = new($"{tipoCuenta}")
                 {
                     Tag = tipoCuenta // Guardar el TipoCuenta en la propiedad Tag
                 };
