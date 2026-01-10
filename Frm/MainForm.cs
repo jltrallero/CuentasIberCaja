@@ -19,6 +19,9 @@ namespace GestorGastos
         {
             InitializeComponent();
             Load += MainForm_Load;
+
+            clbCategorias.DataSource = Enum.GetValues<TipoCuenta>().Where(t => t != TipoCuenta.None).ToList();
+
             ConfigurarTiposGraficos();
 
             // Registrar handlers adicionales tras InitializeComponent (dgv viene del diseñador)
@@ -301,6 +304,34 @@ namespace GestorGastos
         private async void BorrarDatosJLToolStripMenuItem_Click(object sender, EventArgs e)
         {
             await LimpiarDatosxTipo(TipoCuenta.JL);
+        }
+
+        private List<TipoCuenta> GetCategoriasSeleccionadas()
+        {
+            return clbCategorias.CheckedItems.Cast<TipoCuenta>().ToList();
+        }
+
+        private void FiltrarDataGrid()
+        {
+            var seleccionadas = GetCategoriasSeleccionadas();
+
+            if (seleccionadas.Count == 0)
+            {
+                dgv.DataSource = _binding;
+                return;
+            }
+
+            var filtradas = _binding
+                .Where(e => seleccionadas.Contains(e.TipoCuenta))
+                .ToList();
+
+            dgv.DataSource = filtradas;
+        }
+
+        private void ClbCategorias_ItemCheck_1(object sender, ItemCheckEventArgs e)
+        {
+            // Esperar a que el check se aplique realmente
+            BeginInvoke(new Action(FiltrarDataGrid));
         }
     }
 }
