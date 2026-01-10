@@ -281,7 +281,7 @@ namespace GestorGastos
         {
             if (sender is ToolStripMenuItem item && item.Tag is TipoGrafico tipo)
             {
-                var F = new GraficosxMesForm(_binding, tipo);
+                var F = new GraficosxMesForm(ObtenerDatosFiltrados(), tipo);
                 F.ShowDialog();
             }
         }
@@ -290,7 +290,7 @@ namespace GestorGastos
         {
             if (sender is ToolStripMenuItem item && item.Tag is TipoGrafico tipo)
             {
-                var F = new GraficosxConceptoForm(_binding, tipo);
+                var F = new GraficosxConceptoForm(ObtenerDatosFiltrados(), tipo);
                 F.ShowDialog();
             }
         }
@@ -349,7 +349,7 @@ namespace GestorGastos
 
         private List<TipoCuenta> GetCategoriasSeleccionadas()
         {
-            return clbCategorias.CheckedItems.Cast<TipoCuenta>().ToList();
+            return [.. clbCategorias.CheckedItems.Cast<TipoCuenta>()];
         }
 
         private List<Expense> ObtenerDatosFiltrados()

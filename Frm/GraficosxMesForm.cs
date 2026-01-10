@@ -11,7 +11,7 @@ namespace GestorGastos.Frm
         private readonly IEnumerable<Expense> expenses;
         private readonly TipoGrafico _tipo;
 
-        public GraficosxMesForm(BindingList<Expense> datos, TipoGrafico tipo)
+        public GraficosxMesForm(IEnumerable<Expense> datos, TipoGrafico tipo)
         {
             InitializeComponent();
             expenses = datos;
@@ -24,10 +24,13 @@ namespace GestorGastos.Frm
         {
             tabControl1.TabPages.Clear();
 
+            var tipos = expenses.Select(e => e.TipoCuenta).Distinct().ToList();
+
             // Crear una pestaña para cada TipoCuenta
-            foreach (TipoCuenta tipoCuenta in Enum.GetValues<TipoCuenta>())
+            foreach (TipoCuenta tipoCuenta in tipos)
             {
-                if (tipoCuenta == TipoCuenta.None) continue;
+                if (tipoCuenta == TipoCuenta.None) 
+                    continue;
 
                 TabPage tabPage = new($"{tipoCuenta}")
                 {
