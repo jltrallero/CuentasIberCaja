@@ -80,5 +80,20 @@ namespace CuentasIbercaja.Data
             await conn.ExecuteAsync("DELETE FROM Expenses");
             await conn.ExecuteAsync("VACUUM");
         }
+
+        public async Task DeleteCategoryAsync(TipoCuenta tipocuenta)
+        {
+            var tipocuentastr = tipocuenta.ToString();
+
+            using var conn = new SqliteConnection(_connectionString);
+            await conn.OpenAsync();
+
+            await conn.ExecuteAsync(
+                "DELETE FROM Expenses WHERE TipoCuenta = @tipoCuenta",
+                new { tipoCuenta = tipocuentastr }
+            );
+
+            await conn.ExecuteAsync("VACUUM");
+        }
     }
 }

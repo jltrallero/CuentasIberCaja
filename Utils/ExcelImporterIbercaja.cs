@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace CuentasIbercaja.Utils
 {
-    public static class ExcelImporter
+    public static class ExcelImporterIbercaja
     {
         private static int SafeInt(IXLRow row, int index)
         {

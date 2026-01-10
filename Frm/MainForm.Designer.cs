@@ -38,13 +38,20 @@ namespace GestorGastos
             importarTorreroToolStripMenuItem = new ToolStripMenuItem();
             importarMamaToolStripMenuItem = new ToolStripMenuItem();
             importarJoséLuisToolStripMenuItem = new ToolStripMenuItem();
+            importarGastosToolStripMenuItem = new ToolStripMenuItem();
             EdicionRejillaTs = new ToolStripDropDownButton();
             editarFilaToolStripMenuItem = new ToolStripMenuItem();
             borrarToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             Datos = new ToolStripDropDownButton();
             GuardarEnBaseDeDatosToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator4 = new ToolStripSeparator();
             BorrarTodosLosDatosToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator3 = new ToolStripSeparator();
+            borrarDatosGastosToolStripMenuItem = new ToolStripMenuItem();
+            borrarDatosMamáToolStripMenuItem = new ToolStripMenuItem();
+            borrarDatosTorreroToolStripMenuItem = new ToolStripMenuItem();
+            borrarDatosJLToolStripMenuItem = new ToolStripMenuItem();
             VisualizacionTS = new ToolStripDropDownButton();
             GraficoTS = new ToolStripMenuItem();
             gxMesMenuLinea = new ToolStripMenuItem();
@@ -65,8 +72,8 @@ namespace GestorGastos
             gxCategoriaRadar = new ToolStripMenuItem();
             gxCategoriaBurbujas = new ToolStripMenuItem();
             agrupadoPorConceptosToolStripMenuItem = new ToolStripMenuItem();
-            dgv = new DataGridView();
             dashboardInteractivoToolStripMenuItem = new ToolStripMenuItem();
+            dgv = new DataGridView();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             SuspendLayout();
@@ -88,7 +95,7 @@ namespace GestorGastos
             // toolStripDropDownButton1
             // 
             toolStripDropDownButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripDropDownButton1.DropDownItems.AddRange(new ToolStripItem[] { importarTorreroToolStripMenuItem, importarMamaToolStripMenuItem, importarJoséLuisToolStripMenuItem });
+            toolStripDropDownButton1.DropDownItems.AddRange(new ToolStripItem[] { importarTorreroToolStripMenuItem, importarMamaToolStripMenuItem, importarJoséLuisToolStripMenuItem, importarGastosToolStripMenuItem });
             toolStripDropDownButton1.Image = (Image)resources.GetObject("toolStripDropDownButton1.Image");
             toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolStripDropDownButton1.Name = "toolStripDropDownButton1";
@@ -115,6 +122,13 @@ namespace GestorGastos
             importarJoséLuisToolStripMenuItem.Size = new Size(169, 22);
             importarJoséLuisToolStripMenuItem.Text = "Importar José Luis";
             importarJoséLuisToolStripMenuItem.Click += ImportarJoséLuisToolStripMenuItem_Click;
+            // 
+            // importarGastosToolStripMenuItem
+            // 
+            importarGastosToolStripMenuItem.Name = "importarGastosToolStripMenuItem";
+            importarGastosToolStripMenuItem.Size = new Size(169, 22);
+            importarGastosToolStripMenuItem.Text = "Importar Gastos";
+            importarGastosToolStripMenuItem.Click += ImportarGastosToolStripMenuItem_Click;
             // 
             // EdicionRejillaTs
             // 
@@ -148,7 +162,7 @@ namespace GestorGastos
             // Datos
             // 
             Datos.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            Datos.DropDownItems.AddRange(new ToolStripItem[] { GuardarEnBaseDeDatosToolStripMenuItem, BorrarTodosLosDatosToolStripMenuItem });
+            Datos.DropDownItems.AddRange(new ToolStripItem[] { GuardarEnBaseDeDatosToolStripMenuItem, toolStripSeparator4, BorrarTodosLosDatosToolStripMenuItem, toolStripSeparator3, borrarDatosGastosToolStripMenuItem, borrarDatosMamáToolStripMenuItem, borrarDatosTorreroToolStripMenuItem, borrarDatosJLToolStripMenuItem });
             Datos.Image = (Image)resources.GetObject("Datos.Image");
             Datos.ImageTransparentColor = System.Drawing.Color.Magenta;
             Datos.Name = "Datos";
@@ -162,12 +176,50 @@ namespace GestorGastos
             GuardarEnBaseDeDatosToolStripMenuItem.Text = "Guardar en Base de datos";
             GuardarEnBaseDeDatosToolStripMenuItem.Click += GuardarDatosBD_Click;
             // 
+            // toolStripSeparator4
+            // 
+            toolStripSeparator4.Name = "toolStripSeparator4";
+            toolStripSeparator4.Size = new Size(204, 6);
+            // 
             // BorrarTodosLosDatosToolStripMenuItem
             // 
             BorrarTodosLosDatosToolStripMenuItem.Name = "BorrarTodosLosDatosToolStripMenuItem";
             BorrarTodosLosDatosToolStripMenuItem.Size = new Size(207, 22);
             BorrarTodosLosDatosToolStripMenuItem.Text = "Borrar todos los datos";
             BorrarTodosLosDatosToolStripMenuItem.Click += BorrarTodosLosDatosToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new Size(204, 6);
+            // 
+            // borrarDatosGastosToolStripMenuItem
+            // 
+            borrarDatosGastosToolStripMenuItem.Name = "borrarDatosGastosToolStripMenuItem";
+            borrarDatosGastosToolStripMenuItem.Size = new Size(207, 22);
+            borrarDatosGastosToolStripMenuItem.Text = "Borrar datos Gastos";
+            borrarDatosGastosToolStripMenuItem.Click += BorrarDatosGastosToolStripMenuItem_Click;
+            // 
+            // borrarDatosMamáToolStripMenuItem
+            // 
+            borrarDatosMamáToolStripMenuItem.Name = "borrarDatosMamáToolStripMenuItem";
+            borrarDatosMamáToolStripMenuItem.Size = new Size(207, 22);
+            borrarDatosMamáToolStripMenuItem.Text = "Borrar datos Mamá";
+            borrarDatosMamáToolStripMenuItem.Click += BorrarDatosMamáToolStripMenuItem_Click;
+            // 
+            // borrarDatosTorreroToolStripMenuItem
+            // 
+            borrarDatosTorreroToolStripMenuItem.Name = "borrarDatosTorreroToolStripMenuItem";
+            borrarDatosTorreroToolStripMenuItem.Size = new Size(207, 22);
+            borrarDatosTorreroToolStripMenuItem.Text = "Borrar datos Torrero";
+            borrarDatosTorreroToolStripMenuItem.Click += BorrarDatosTorreroToolStripMenuItem_Click;
+            // 
+            // borrarDatosJLToolStripMenuItem
+            // 
+            borrarDatosJLToolStripMenuItem.Name = "borrarDatosJLToolStripMenuItem";
+            borrarDatosJLToolStripMenuItem.Size = new Size(207, 22);
+            borrarDatosJLToolStripMenuItem.Text = "Borrar datos J.L.";
+            borrarDatosJLToolStripMenuItem.Click += BorrarDatosJLToolStripMenuItem_Click;
             // 
             // VisualizacionTS
             // 
@@ -313,6 +365,13 @@ namespace GestorGastos
             agrupadoPorConceptosToolStripMenuItem.Text = "Agrupado por conceptos";
             agrupadoPorConceptosToolStripMenuItem.Click += AgrupadoPorConceptosToolStripMenuItem_Click;
             // 
+            // dashboardInteractivoToolStripMenuItem
+            // 
+            dashboardInteractivoToolStripMenuItem.Name = "dashboardInteractivoToolStripMenuItem";
+            dashboardInteractivoToolStripMenuItem.Size = new Size(206, 22);
+            dashboardInteractivoToolStripMenuItem.Text = "Dashboard Interactivo";
+            dashboardInteractivoToolStripMenuItem.Click += DashboardInteractivoToolStripMenuItem_Click;
+            // 
             // dgv
             // 
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -321,13 +380,6 @@ namespace GestorGastos
             dgv.Name = "dgv";
             dgv.Size = new Size(800, 425);
             dgv.TabIndex = 3;
-            // 
-            // dashboardInteractivoToolStripMenuItem
-            // 
-            dashboardInteractivoToolStripMenuItem.Name = "dashboardInteractivoToolStripMenuItem";
-            dashboardInteractivoToolStripMenuItem.Size = new Size(206, 22);
-            dashboardInteractivoToolStripMenuItem.Text = "Dashboard Interactivo";
-            dashboardInteractivoToolStripMenuItem.Click += DashboardInteractivoToolStripMenuItem_Click;
             // 
             // MainForm
             // 
@@ -382,5 +434,12 @@ namespace GestorGastos
         private ToolStripMenuItem importarJoséLuisToolStripMenuItem;
         private ToolStripMenuItem agrupadoPorConceptosToolStripMenuItem;
         private ToolStripMenuItem dashboardInteractivoToolStripMenuItem;
+        private ToolStripMenuItem importarGastosToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator4;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripMenuItem borrarDatosGastosToolStripMenuItem;
+        private ToolStripMenuItem borrarDatosMamáToolStripMenuItem;
+        private ToolStripMenuItem borrarDatosTorreroToolStripMenuItem;
+        private ToolStripMenuItem borrarDatosJLToolStripMenuItem;
     }
 }

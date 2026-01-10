@@ -123,6 +123,12 @@ namespace GestorGastos
             _binding.Clear();
         }
 
+        private async Task LimpiarDatosxTipo(TipoCuenta tipocuenta)
+        {
+            await _repo.DeleteCategoryAsync(tipocuenta);
+            _binding.Clear();
+        }
+
         private async void MainForm_Load(object? sender, EventArgs e)
         {
             await LoadDataAsync();
@@ -135,20 +141,26 @@ namespace GestorGastos
             dgv.DataSource = _binding;
         }
 
-        // Extraer la lógica común de importación a un método privado para evitar duplicidad y cumplir S4144
         private async Task ImportarDesdeArchivoAsync(TipoCuenta cuenta)
         {
             string titulo = cuenta switch
             {
-                TipoCuenta.None => string.Empty,
                 TipoCuenta.Torrero => "Importar archivo de Torrero",
                 TipoCuenta.Mama => "Importar archivo de Mama",
                 TipoCuenta.JL => "Importar archivo de José Luis",
-                _ => string.Empty,
+                TipoCuenta.Ingresos_Gastos => "Importar archivo de aplicación Gestor de gastos",
+                _ => "Importar archivo"
             };
 
-            using var ofd = new OpenFileDialog { Filter = "Excel files|*.xlsx;*.xls", Multiselect = true, Title = titulo };
-            if (ofd.ShowDialog() != DialogResult.OK) return;
+            using var ofd = new OpenFileDialog
+            {
+                Filter = "Excel files|*.xlsx;*.xls",
+                Multiselect = true,
+                Title = titulo
+            };
+
+            if (ofd.ShowDialog() != DialogResult.OK)
+                return;
 
             int totalImportados = 0;
 
@@ -156,23 +168,28 @@ namespace GestorGastos
             {
                 try
                 {
-                    var imported = ExcelImporter.Import(cuenta, fileName).ToList();
+                    IEnumerable<Expense> imported = cuenta switch
+                    {
+                        TipoCuenta.Ingresos_Gastos => ExcelImporterGastos.Import(fileName),
+                        TipoCuenta.None => [],
+                        _ => ExcelImporterIbercaja.Import(cuenta, fileName)
+                    };
+
                     foreach (var ex in imported)
                     {
                         _binding.Insert(0, ex);
-                        using Task<long> idTask = _repo.InsertAsync(ex);
-                        idTask.Wait();
-                        ex.Id = idTask.Result;
+
+                        long id = await _repo.InsertAsync(ex); // ahora sí async
+                        ex.Id = id;
                     }
 
-                    totalImportados += imported.Count;
+                    totalImportados += imported.Count();
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Error al importar el archivo {fileName}: {ex.Message}", "Error de Importación", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
             MessageBox.Show($"Importadas {totalImportados} filas en total.", "Importación", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -259,6 +276,31 @@ namespace GestorGastos
         {
             var F = new DashboardForm(_binding);
             F.ShowDialog();
+        }
+
+        private async void ImportarGastosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await ImportarDesdeArchivoAsync(TipoCuenta.Ingresos_Gastos);
+        }
+
+        private async void BorrarDatosGastosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await LimpiarDatosxTipo(TipoCuenta.Ingresos_Gastos);
+        }
+
+        private async void BorrarDatosMamáToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await LimpiarDatosxTipo(TipoCuenta.Mama);
+        }
+
+        private async void BorrarDatosTorreroToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await LimpiarDatosxTipo(TipoCuenta.Torrero);
+        }
+
+        private async void BorrarDatosJLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await LimpiarDatosxTipo(TipoCuenta.JL);
         }
     }
 }
