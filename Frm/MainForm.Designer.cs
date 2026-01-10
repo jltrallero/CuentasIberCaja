@@ -53,24 +53,11 @@ namespace GestorGastos
             borrarDatosTorreroToolStripMenuItem = new ToolStripMenuItem();
             borrarDatosJLToolStripMenuItem = new ToolStripMenuItem();
             VisualizacionTS = new ToolStripDropDownButton();
-            GraficoTS = new ToolStripMenuItem();
-            gxMesMenuLinea = new ToolStripMenuItem();
-            gxMesMenuBarrasH = new ToolStripMenuItem();
-            gxMesMenuBarrasV = new ToolStripMenuItem();
-            gxMesMenuCircular = new ToolStripMenuItem();
-            gxMesMenuAreas = new ToolStripMenuItem();
-            gxMesMenuDispersion = new ToolStripMenuItem();
-            gxMesMenuRadar = new ToolStripMenuItem();
-            gxMesMenuBurbujas = new ToolStripMenuItem();
-            gxCategoriasMenu = new ToolStripMenuItem();
-            gxCategoriaMenuLinea = new ToolStripMenuItem();
-            gxCategoriaBarrasH = new ToolStripMenuItem();
-            gxCategoriaBarrasV = new ToolStripMenuItem();
-            gxCategoriaCircular = new ToolStripMenuItem();
-            gxCategoriaAreas = new ToolStripMenuItem();
-            gxCategoriaDispersion = new ToolStripMenuItem();
-            gxCategoriaRadar = new ToolStripMenuItem();
-            gxCategoriaBurbujas = new ToolStripMenuItem();
+            graficoPorMesesToolStripMenuItem = new ToolStripMenuItem();
+            graficosPorConceptosToolStripMenuItem = new ToolStripMenuItem();
+            resumenAgrupadoToolStripMenuItem = new ToolStripMenuItem();
+            dashBoardToolStripMenuItem = new ToolStripMenuItem();
+            GraficoxConceptoTS = new ToolStripMenuItem();
             agrupadoPorConceptosToolStripMenuItem = new ToolStripMenuItem();
             dashboardInteractivoToolStripMenuItem = new ToolStripMenuItem();
             panel1 = new Panel();
@@ -228,140 +215,45 @@ namespace GestorGastos
             // 
             // VisualizacionTS
             // 
-            VisualizacionTS.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            VisualizacionTS.DropDownItems.AddRange(new ToolStripItem[] { GraficoTS, gxCategoriasMenu, agrupadoPorConceptosToolStripMenuItem, dashboardInteractivoToolStripMenuItem });
-            VisualizacionTS.Image = (Image)resources.GetObject("VisualizacionTS.Image");
-            VisualizacionTS.ImageTransparentColor = System.Drawing.Color.Magenta;
+            VisualizacionTS.DropDownItems.AddRange(new ToolStripItem[] { graficoPorMesesToolStripMenuItem, graficosPorConceptosToolStripMenuItem, resumenAgrupadoToolStripMenuItem, dashBoardToolStripMenuItem });
             VisualizacionTS.Name = "VisualizacionTS";
             VisualizacionTS.Size = new Size(88, 22);
             VisualizacionTS.Text = "Visualización";
             // 
-            // GraficoTS
+            // graficoPorMesesToolStripMenuItem
             // 
-            GraficoTS.DropDownItems.AddRange(new ToolStripItem[] { gxMesMenuLinea, gxMesMenuBarrasH, gxMesMenuBarrasV, gxMesMenuCircular, gxMesMenuAreas, gxMesMenuDispersion, gxMesMenuRadar, gxMesMenuBurbujas });
-            GraficoTS.Name = "GraficoTS";
-            GraficoTS.Size = new Size(206, 22);
-            GraficoTS.Text = "Gráfico por meses";
-            GraficoTS.Click += GraficoTS_Click;
+            graficoPorMesesToolStripMenuItem.Name = "graficoPorMesesToolStripMenuItem";
+            graficoPorMesesToolStripMenuItem.Size = new Size(198, 22);
+            graficoPorMesesToolStripMenuItem.Text = "Grafico por meses";
+            graficoPorMesesToolStripMenuItem.Click += GraficoTS_Click;
             // 
-            // gxMesMenuLinea
+            // graficosPorConceptosToolStripMenuItem
             // 
-            gxMesMenuLinea.Name = "gxMesMenuLinea";
-            gxMesMenuLinea.Size = new Size(232, 22);
-            gxMesMenuLinea.Text = "Gráfico de líneas";
-            gxMesMenuLinea.Click += GraficoTS_Click;
+            graficosPorConceptosToolStripMenuItem.Name = "graficosPorConceptosToolStripMenuItem";
+            graficosPorConceptosToolStripMenuItem.Size = new Size(198, 22);
+            graficosPorConceptosToolStripMenuItem.Text = "Graficos por Conceptos";
+            graficosPorConceptosToolStripMenuItem.Click += GxCategoriasMenu_Click;
             // 
-            // gxMesMenuBarrasH
+            // resumenAgrupadoToolStripMenuItem
             // 
-            gxMesMenuBarrasH.Name = "gxMesMenuBarrasH";
-            gxMesMenuBarrasH.Size = new Size(232, 22);
-            gxMesMenuBarrasH.Text = "Barras horizontales";
-            gxMesMenuBarrasH.Click += GraficoTS_Click;
+            resumenAgrupadoToolStripMenuItem.Name = "resumenAgrupadoToolStripMenuItem";
+            resumenAgrupadoToolStripMenuItem.Size = new Size(198, 22);
+            resumenAgrupadoToolStripMenuItem.Text = "Resumen agrupado";
+            resumenAgrupadoToolStripMenuItem.Click += AgrupadoPorConceptosToolStripMenuItem_Click;
             // 
-            // gxMesMenuBarrasV
+            // dashBoardToolStripMenuItem
             // 
-            gxMesMenuBarrasV.Name = "gxMesMenuBarrasV";
-            gxMesMenuBarrasV.Size = new Size(232, 22);
-            gxMesMenuBarrasV.Text = "Barras verticales";
-            gxMesMenuBarrasV.Click += GraficoTS_Click;
+            dashBoardToolStripMenuItem.Name = "dashBoardToolStripMenuItem";
+            dashBoardToolStripMenuItem.Size = new Size(198, 22);
+            dashBoardToolStripMenuItem.Text = "DashBoard";
+            dashBoardToolStripMenuItem.Click += DashboardInteractivoToolStripMenuItem_Click;
             // 
-            // gxMesMenuCircular
+            // GraficoxConceptoTS
             // 
-            gxMesMenuCircular.Name = "gxMesMenuCircular";
-            gxMesMenuCircular.Size = new Size(232, 22);
-            gxMesMenuCircular.Text = "Gráfico circular (Pie)";
-            gxMesMenuCircular.Click += GraficoTS_Click;
-            // 
-            // gxMesMenuAreas
-            // 
-            gxMesMenuAreas.Name = "gxMesMenuAreas";
-            gxMesMenuAreas.Size = new Size(232, 22);
-            gxMesMenuAreas.Text = "Gráfico de áreas";
-            gxMesMenuAreas.Click += GraficoTS_Click;
-            // 
-            // gxMesMenuDispersion
-            // 
-            gxMesMenuDispersion.Name = "gxMesMenuDispersion";
-            gxMesMenuDispersion.Size = new Size(232, 22);
-            gxMesMenuDispersion.Text = "Gráfico de dispersión (Scatter)";
-            gxMesMenuDispersion.Click += GraficoTS_Click;
-            // 
-            // gxMesMenuRadar
-            // 
-            gxMesMenuRadar.Name = "gxMesMenuRadar";
-            gxMesMenuRadar.Size = new Size(232, 22);
-            gxMesMenuRadar.Text = "Gráfico tipo radar";
-            gxMesMenuRadar.Click += GraficoTS_Click;
-            // 
-            // gxMesMenuBurbujas
-            // 
-            gxMesMenuBurbujas.Name = "gxMesMenuBurbujas";
-            gxMesMenuBurbujas.Size = new Size(232, 22);
-            gxMesMenuBurbujas.Text = "Gráfico de burbujas";
-            gxMesMenuBurbujas.Click += GraficoTS_Click;
-            // 
-            // gxCategoriasMenu
-            // 
-            gxCategoriasMenu.DropDownItems.AddRange(new ToolStripItem[] { gxCategoriaMenuLinea, gxCategoriaBarrasH, gxCategoriaBarrasV, gxCategoriaCircular, gxCategoriaAreas, gxCategoriaDispersion, gxCategoriaRadar, gxCategoriaBurbujas });
-            gxCategoriasMenu.Name = "gxCategoriasMenu";
-            gxCategoriasMenu.Size = new Size(206, 22);
-            gxCategoriasMenu.Text = "Gráfico por conceptos";
-            // 
-            // gxCategoriaMenuLinea
-            // 
-            gxCategoriaMenuLinea.Name = "gxCategoriaMenuLinea";
-            gxCategoriaMenuLinea.Size = new Size(232, 22);
-            gxCategoriaMenuLinea.Text = "Gráfico de líneas";
-            gxCategoriaMenuLinea.Click += GraficoTSCategorias_Click;
-            // 
-            // gxCategoriaBarrasH
-            // 
-            gxCategoriaBarrasH.Name = "gxCategoriaBarrasH";
-            gxCategoriaBarrasH.Size = new Size(232, 22);
-            gxCategoriaBarrasH.Text = "Barras horizontales";
-            gxCategoriaBarrasH.Click += GraficoTSCategorias_Click;
-            // 
-            // gxCategoriaBarrasV
-            // 
-            gxCategoriaBarrasV.Name = "gxCategoriaBarrasV";
-            gxCategoriaBarrasV.Size = new Size(232, 22);
-            gxCategoriaBarrasV.Text = "Barras verticales";
-            gxCategoriaBarrasV.Click += GraficoTSCategorias_Click;
-            // 
-            // gxCategoriaCircular
-            // 
-            gxCategoriaCircular.Name = "gxCategoriaCircular";
-            gxCategoriaCircular.Size = new Size(232, 22);
-            gxCategoriaCircular.Text = "Gráfico circular (Pie)";
-            gxCategoriaCircular.Click += GraficoTSCategorias_Click;
-            // 
-            // gxCategoriaAreas
-            // 
-            gxCategoriaAreas.Name = "gxCategoriaAreas";
-            gxCategoriaAreas.Size = new Size(232, 22);
-            gxCategoriaAreas.Text = "Gráfico de áreas";
-            gxCategoriaAreas.Click += GraficoTSCategorias_Click;
-            // 
-            // gxCategoriaDispersion
-            // 
-            gxCategoriaDispersion.Name = "gxCategoriaDispersion";
-            gxCategoriaDispersion.Size = new Size(232, 22);
-            gxCategoriaDispersion.Text = "Gráfico de dispersión (Scatter)";
-            gxCategoriaDispersion.Click += GraficoTSCategorias_Click;
-            // 
-            // gxCategoriaRadar
-            // 
-            gxCategoriaRadar.Name = "gxCategoriaRadar";
-            gxCategoriaRadar.Size = new Size(232, 22);
-            gxCategoriaRadar.Text = "Gráfico tipo radar";
-            gxCategoriaRadar.Click += GraficoTSCategorias_Click;
-            // 
-            // gxCategoriaBurbujas
-            // 
-            gxCategoriaBurbujas.Name = "gxCategoriaBurbujas";
-            gxCategoriaBurbujas.Size = new Size(232, 22);
-            gxCategoriaBurbujas.Text = "Gráfico de burbujas";
-            gxCategoriaBurbujas.Click += GraficoTSCategorias_Click;
+            GraficoxConceptoTS.Name = "GraficoxConceptoTS";
+            GraficoxConceptoTS.Size = new Size(206, 22);
+            GraficoxConceptoTS.Text = "Gráfico por conceptos";
+            GraficoxConceptoTS.Click += GxCategoriasMenu_Click;
             // 
             // agrupadoPorConceptosToolStripMenuItem
             // 
@@ -415,7 +307,7 @@ namespace GestorGastos
             clbCategorias.Name = "clbCategorias";
             clbCategorias.Size = new Size(800, 24);
             clbCategorias.TabIndex = 2;
-            clbCategorias.ItemCheck += ClbCategorias_ItemCheck_1;
+            clbCategorias.ItemCheck += ClbCategorias_ItemCheck;
             // 
             // MainForm
             // 
@@ -446,25 +338,8 @@ namespace GestorGastos
         private ToolStripDropDownButton Datos;
         private ToolStripMenuItem GuardarEnBaseDeDatosToolStripMenuItem;
         private ToolStripMenuItem BorrarTodosLosDatosToolStripMenuItem;
-        private ToolStripDropDownButton VisualizacionTS;
-        private ToolStripMenuItem GraficoTS;
-        private ToolStripMenuItem gxMesMenuLinea;
-        private ToolStripMenuItem gxMesMenuBarrasH;
-        private ToolStripMenuItem gxMesMenuBarrasV;
-        private ToolStripMenuItem gxMesMenuCircular;
-        private ToolStripMenuItem gxMesMenuAreas;
-        private ToolStripMenuItem gxMesMenuDispersion;
-        private ToolStripMenuItem gxMesMenuRadar;
-        private ToolStripMenuItem gxMesMenuBurbujas;
-        private ToolStripMenuItem gxCategoriasMenu;
-        private ToolStripMenuItem gxCategoriaMenuLinea;
-        private ToolStripMenuItem gxCategoriaBarrasH;
-        private ToolStripMenuItem gxCategoriaBarrasV;
-        private ToolStripMenuItem gxCategoriaCircular;
-        private ToolStripMenuItem gxCategoriaAreas;
-        private ToolStripMenuItem gxCategoriaDispersion;
-        private ToolStripMenuItem gxCategoriaRadar;
-        private ToolStripMenuItem gxCategoriaBurbujas;
+        private ToolStripDropDownButton VisualizacionTS;        
+        private ToolStripMenuItem GraficoxConceptoTS;
         private ToolStripDropDownButton toolStripDropDownButton1;
         private ToolStripMenuItem importarTorreroToolStripMenuItem;
         private ToolStripMenuItem importarMamaToolStripMenuItem;
@@ -482,5 +357,9 @@ namespace GestorGastos
         private Panel panel2;
         private CheckedListBox clbCategorias;
         private DataGridView dgv;
+        private ToolStripMenuItem graficoPorMesesToolStripMenuItem;
+        private ToolStripMenuItem graficosPorConceptosToolStripMenuItem;
+        private ToolStripMenuItem resumenAgrupadoToolStripMenuItem;
+        private ToolStripMenuItem dashBoardToolStripMenuItem;
     }
 }

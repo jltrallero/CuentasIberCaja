@@ -25,7 +25,6 @@ namespace GestorGastos
             Load += MainForm_Load;
 
             ConfigurarSelectorCategorias();
-            ConfigurarTiposGraficos();
             ConfigurarRejilla();
         }
 
@@ -56,27 +55,6 @@ namespace GestorGastos
             };
         }
 
-        private void ConfigurarTiposGraficos()
-        {
-            gxMesMenuLinea.Tag = TipoGrafico.Linea;
-            gxMesMenuBarrasH.Tag = TipoGrafico.Barra;
-            gxMesMenuBarrasV.Tag = TipoGrafico.Columna;
-            gxMesMenuCircular.Tag = TipoGrafico.Circular;
-            gxMesMenuAreas.Tag = TipoGrafico.Area;
-            gxMesMenuDispersion.Tag = TipoGrafico.Punto;
-            gxMesMenuRadar.Tag = TipoGrafico.Radar;
-            gxMesMenuBurbujas.Tag = TipoGrafico.Burbuja;
-
-            gxCategoriaMenuLinea.Tag = TipoGrafico.Linea;
-            gxCategoriaBarrasH.Tag = TipoGrafico.Barra;
-            gxCategoriaBarrasV.Tag = TipoGrafico.Columna;
-            gxCategoriaCircular.Tag = TipoGrafico.Circular;
-            gxCategoriaAreas.Tag = TipoGrafico.Area;
-            gxCategoriaDispersion.Tag = TipoGrafico.Punto;
-            gxCategoriaRadar.Tag = TipoGrafico.Radar;
-            gxCategoriaBurbujas.Tag = TipoGrafico.Burbuja;
-        }
-
         private void Dgv_CellMouseDown(object? sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right && e.RowIndex >= 0 && dgv.Rows.Count > e.RowIndex)
@@ -102,7 +80,7 @@ namespace GestorGastos
             _lastColumn = column;
 
             var ordenada = _ascending
-                ? _todasLasExpenses.OrderBy(x => x.GetType().GetProperty(column)?.GetValue(x)).ToList()
+                ? [.. _todasLasExpenses.OrderBy(x => x.GetType().GetProperty(column)?.GetValue(x))]
                 : _todasLasExpenses.OrderByDescending(x => x.GetType().GetProperty(column)?.GetValue(x)).ToList();
 
             _binding = new BindingList<Expense>(ordenada);
@@ -279,20 +257,14 @@ namespace GestorGastos
 
         private void GraficoTS_Click(object sender, EventArgs e)
         {
-            if (sender is ToolStripMenuItem item && item.Tag is TipoGrafico tipo)
-            {
-                var F = new GraficosxMesForm(ObtenerDatosFiltrados(), tipo);
-                F.ShowDialog();
-            }
+            var F = new GraficosxMesForm(ObtenerDatosFiltrados());
+            F.ShowDialog();
         }
 
-        private void GraficoTSCategorias_Click(object sender, EventArgs e)
+        private void GxCategoriasMenu_Click(object sender, EventArgs e)
         {
-            if (sender is ToolStripMenuItem item && item.Tag is TipoGrafico tipo)
-            {
-                var F = new GraficosxConceptoForm(ObtenerDatosFiltrados(), tipo);
-                F.ShowDialog();
-            }
+            var F = new GraficosxConceptoForm(ObtenerDatosFiltrados());
+            F.ShowDialog();
         }
 
         private async void ImportarTorreroToolStripMenuItem_Click(object sender, EventArgs e)
@@ -371,7 +343,7 @@ namespace GestorGastos
             AsignarDataSource(ObtenerDatosFiltrados());
         }
 
-        private void ClbCategorias_ItemCheck_1(object sender, ItemCheckEventArgs e)
+        private void ClbCategorias_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             // Esperar a que el check se aplique realmente
             BeginInvoke(new Action(FiltrarDataGrid));

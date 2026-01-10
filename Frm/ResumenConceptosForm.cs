@@ -11,7 +11,6 @@ namespace CuentasIbercaja.Frm
         {
             InitializeComponent();
             expenses = datos;
-
             ConfigurarTabControl();
         }
 

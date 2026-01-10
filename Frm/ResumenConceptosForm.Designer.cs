@@ -43,7 +43,7 @@
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new Size(1002, 630);
-            tabControl1.TabIndex = 3;
+            tabControl1.TabIndex = 8;
             // 
             // tabPage1
             // 
@@ -60,7 +60,7 @@
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1176, 575);
+            tabPage2.Size = new Size(994, 578);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;
@@ -72,13 +72,12 @@
             ClientSize = new Size(1002, 630);
             Controls.Add(tabControl1);
             Name = "ResumenConceptosForm";
-            Text = "ResumenConceptosForm";
+            Text = "Resumen por Conceptos";
             tabControl1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
-
         private TabControl tabControl1;
         private TabPage tabPage1;
         private TabPage tabPage2;

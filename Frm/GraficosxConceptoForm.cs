@@ -1,6 +1,5 @@
 ﻿using CuentasIbercaja.Frm;
 using CuentasIbercaja.Models;
-using System.ComponentModel;
 using System.Data;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -9,18 +8,23 @@ namespace GestorGastos.Frm
     public partial class GraficosxConceptoForm : Form
     {
         private readonly IEnumerable<Expense> expenses;
-        private readonly TipoGrafico _tipo;
 
-        public GraficosxConceptoForm(IEnumerable<Expense> datos, TipoGrafico tipo)
+        public GraficosxConceptoForm(IEnumerable<Expense> datos)
         {
             InitializeComponent();
             expenses = datos;
-            _tipo = tipo;
+            ConfigurarSelectorTipoGrafico();
 
-            ConfigurarTabControl();
+            if (Enum.GetValues<TipoGrafico>().GetValue(0) is TipoGrafico tipo)
+                ConfigurarTabControl(tipo);
         }
 
-        private void ConfigurarTabControl()
+        private void ConfigurarSelectorTipoGrafico()
+        {
+            clbTipoGrafico.DataSource = Enum.GetValues<TipoGrafico>().ToList();
+        }
+
+        private void ConfigurarTabControl(TipoGrafico tipo)
         {
             tabControl1.TabPages.Clear();
 
@@ -29,8 +33,8 @@ namespace GestorGastos.Frm
             // Crear una pestaña para cada TipoCuenta
             foreach (TipoCuenta tipoCuenta in tipos)
             {
-                if (tipoCuenta == TipoCuenta.None) 
-                   continue;
+                if (tipoCuenta == TipoCuenta.None)
+                    continue;
 
                 TabPage tabPage = new($"{tipoCuenta}")
                 {
@@ -45,21 +49,21 @@ namespace GestorGastos.Frm
             {
                 if (tabControl1.SelectedTab?.Tag is TipoCuenta tipoCuentaSeleccionado)
                 {
-                    MostrarGraficosPorTipoCuenta(tipoCuentaSeleccionado, tabControl1.SelectedTab);
+                    MostrarGraficosPorTipoCuenta(tipo, tipoCuentaSeleccionado, tabControl1.SelectedTab);
                 }
             };
 
             // Mostrar los gráficos de la primera pestaña al inicio
             if (tabControl1.TabPages.Count > 0 && tabControl1.TabPages[0].Tag is TipoCuenta tipoCuentaInicial)
             {
-                MostrarGraficosPorTipoCuenta(tipoCuentaInicial, tabControl1.TabPages[0]);
+                MostrarGraficosPorTipoCuenta(tipo, tipoCuentaInicial, tabControl1.TabPages[0]);
             }
 
             // Agregar el TabControl al formulario
             Controls.Add(tabControl1);
         }
 
-        private void MostrarGraficosPorTipoCuenta(TipoCuenta tipoCuenta, TabPage tabPage)
+        private void MostrarGraficosPorTipoCuenta(TipoGrafico tipo, TipoCuenta tipoCuenta, TabPage tabPage)
         {
             // Limpiar los controles existentes en la pestaña
             tabPage.Controls.Clear();
@@ -75,14 +79,14 @@ namespace GestorGastos.Frm
             };
 
             // Crear gráficos para ingresos y gastos
-            CrearGraficoComparativo(splitContainer.Panel1, datosFiltrados, true);  // Ingresos
-            CrearGraficoComparativo(splitContainer.Panel2, datosFiltrados, false); // Gastos
+            CrearGraficoComparativo(splitContainer.Panel1, datosFiltrados, true, tipo);  // Ingresos
+            CrearGraficoComparativo(splitContainer.Panel2, datosFiltrados, false, tipo); // Gastos
 
             // Agregar el SplitContainer a la pestaña
             tabPage.Controls.Add(splitContainer);
         }
 
-        private void CrearGraficoComparativo(Control panel, IEnumerable<Expense> datos, bool esIngreso)
+        private static void CrearGraficoComparativo(Control panel, IEnumerable<Expense> datos, bool esIngreso, TipoGrafico tipo)
         {
             var valores = datos
                 .Where(e => e.EsIngreso == esIngreso)
@@ -114,7 +118,7 @@ namespace GestorGastos.Frm
             {
                 Series serie = new($"Año: {año}")
                 {
-                    ChartType = GraficosxConceptoFormHelpers.MapearTipoGrafico(_tipo),
+                    ChartType = GraficosxConceptoFormHelpers.MapearTipoGrafico(tipo),
                     BorderWidth = 2
                 };
 
@@ -146,6 +150,14 @@ namespace GestorGastos.Frm
 
             // Agregar el gráfico al panel
             panel.Controls.Add(chartComparativo);
+        }
+
+        private void ClbTipoGrafico_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (clbTipoGrafico.SelectedItem is TipoGrafico tipo)
+            {
+                ConfigurarTabControl(tipo);
+            }
         }
     }
 }
