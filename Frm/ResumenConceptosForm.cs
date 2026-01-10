@@ -1,5 +1,4 @@
 ﻿using CuentasIbercaja.Models;
-using System.ComponentModel;
 using System.Data;
 
 namespace CuentasIbercaja.Frm
@@ -8,7 +7,7 @@ namespace CuentasIbercaja.Frm
     {
         private readonly IEnumerable<Expense> expenses;
 
-        public ResumenConceptosForm(BindingList<Expense> datos)
+        public ResumenConceptosForm(List<Expense> datos)
         {
             InitializeComponent();
             expenses = datos;
@@ -20,10 +19,13 @@ namespace CuentasIbercaja.Frm
         {
             tabControl1.TabPages.Clear();
 
+            var tipos = expenses.Select(e => e.TipoCuenta).Distinct().ToList();
+
             // Crear una pestaña para cada TipoCuenta
-            foreach (TipoCuenta tipoCuenta in Enum.GetValues<TipoCuenta>())
+            foreach (TipoCuenta tipoCuenta in tipos)
             {
-                if (tipoCuenta == TipoCuenta.None) continue;
+                if (tipoCuenta == TipoCuenta.None)
+                    continue;
 
                 // Simplificar la creación de TabPage usando inicializador de objeto
                 TabPage tabPage = new($"{tipoCuenta}")

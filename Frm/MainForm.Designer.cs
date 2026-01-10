@@ -74,14 +74,13 @@ namespace GestorGastos
             agrupadoPorConceptosToolStripMenuItem = new ToolStripMenuItem();
             dashboardInteractivoToolStripMenuItem = new ToolStripMenuItem();
             panel1 = new Panel();
+            dgv = new DataGridView();
             panel2 = new Panel();
             clbCategorias = new CheckedListBox();
-            FiltrarCtrl = new Button();
-            dgv = new DataGridView();
             toolStrip1.SuspendLayout();
             panel1.SuspendLayout();
-            panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // toolStrip1
@@ -388,14 +387,23 @@ namespace GestorGastos
             panel1.Size = new Size(800, 561);
             panel1.TabIndex = 4;
             // 
+            // dgv
+            // 
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv.Dock = DockStyle.Fill;
+            dgv.Location = new Point(0, 24);
+            dgv.Name = "dgv";
+            dgv.Size = new Size(800, 537);
+            dgv.TabIndex = 6;
+            dgv.ColumnHeaderMouseClick += Dgv_ColumnHeaderMouseClick;
+            // 
             // panel2
             // 
             panel2.Controls.Add(clbCategorias);
-            panel2.Controls.Add(FiltrarCtrl);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(800, 43);
+            panel2.Size = new Size(800, 24);
             panel2.TabIndex = 5;
             // 
             // clbCategorias
@@ -405,28 +413,9 @@ namespace GestorGastos
             clbCategorias.Location = new Point(0, 0);
             clbCategorias.MultiColumn = true;
             clbCategorias.Name = "clbCategorias";
-            clbCategorias.Size = new Size(725, 43);
+            clbCategorias.Size = new Size(800, 24);
             clbCategorias.TabIndex = 2;
             clbCategorias.ItemCheck += ClbCategorias_ItemCheck_1;
-            // 
-            // FiltrarCtrl
-            // 
-            FiltrarCtrl.Dock = DockStyle.Right;
-            FiltrarCtrl.Location = new Point(725, 0);
-            FiltrarCtrl.Name = "FiltrarCtrl";
-            FiltrarCtrl.Size = new Size(75, 43);
-            FiltrarCtrl.TabIndex = 1;
-            FiltrarCtrl.Text = "Filtrar";
-            FiltrarCtrl.UseVisualStyleBackColor = true;
-            // 
-            // dgv
-            // 
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Dock = DockStyle.Fill;
-            dgv.Location = new Point(0, 43);
-            dgv.Name = "dgv";
-            dgv.Size = new Size(800, 518);
-            dgv.TabIndex = 6;
             // 
             // MainForm
             // 
@@ -441,8 +430,8 @@ namespace GestorGastos
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             panel1.ResumeLayout(false);
-            panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgv).EndInit();
+            panel2.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -491,7 +480,6 @@ namespace GestorGastos
         private ToolStripMenuItem borrarDatosJLToolStripMenuItem;
         private Panel panel1;
         private Panel panel2;
-        private Button FiltrarCtrl;
         private CheckedListBox clbCategorias;
         private DataGridView dgv;
     }

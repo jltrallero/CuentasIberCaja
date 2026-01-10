@@ -13,17 +13,29 @@ namespace GestorGastos
         // Inicialización explícita de los campos para evitar CS8618
         private readonly ExpenseRepository _repo = new();
 
+        private List<Expense> _todasLasExpenses;
         private BindingList<Expense> _binding = [];
+
+        private string _lastColumn = "";
+        private bool _ascending = true;
 
         public MainForm()
         {
             InitializeComponent();
             Load += MainForm_Load;
 
-            clbCategorias.DataSource = Enum.GetValues<TipoCuenta>().Where(t => t != TipoCuenta.None).ToList();
-
+            ConfigurarSelectorCategorias();
             ConfigurarTiposGraficos();
+            ConfigurarRejilla();
+        }
 
+        private void ConfigurarSelectorCategorias()
+        {
+            clbCategorias.DataSource = Enum.GetValues<TipoCuenta>().Where(t => t != TipoCuenta.None).ToList();
+        }
+
+        private void ConfigurarRejilla()
+        {
             // Registrar handlers adicionales tras InitializeComponent (dgv viene del diseñador)
             Shown += (s, e) =>
             {
@@ -73,6 +85,28 @@ namespace GestorGastos
                 dgv.Rows[e.RowIndex].Selected = true;
                 dgv.CurrentCell = dgv.Rows[e.RowIndex].Cells[Math.Max(0, e.ColumnIndex)];
             }
+        }
+
+        private void Dgv_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var column = dgv.Columns[e.ColumnIndex].DataPropertyName;
+
+            if (string.IsNullOrEmpty(column))
+                return;
+
+            if (_lastColumn == column)
+                _ascending = !_ascending;
+            else
+                _ascending = true;
+
+            _lastColumn = column;
+
+            var ordenada = _ascending
+                ? _todasLasExpenses.OrderBy(x => x.GetType().GetProperty(column)?.GetValue(x)).ToList()
+                : _todasLasExpenses.OrderByDescending(x => x.GetType().GetProperty(column)?.GetValue(x)).ToList();
+
+            _binding = new BindingList<Expense>(ordenada);
+            dgv.DataSource = _binding;
         }
 
         private async Task DeleteSelectedAsync()
@@ -140,8 +174,15 @@ namespace GestorGastos
         private async Task LoadDataAsync()
         {
             var items = (await _repo.GetAllAsync()).ToList();
+            _todasLasExpenses = items; // guardamos la lista original
             _binding = new BindingList<Expense>(items);
-            dgv.DataSource = _binding;
+            AsignarDataSource([.. _binding]);
+        }
+
+        private void AsignarDataSource(List<Expense> data)
+        {
+            dgv.DataSource = data;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
         }
 
         private async Task ImportarDesdeArchivoAsync(TipoCuenta cuenta)
@@ -271,7 +312,7 @@ namespace GestorGastos
 
         private void AgrupadoPorConceptosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var F = new ResumenConceptosForm(_binding);
+            var F = new ResumenConceptosForm(ObtenerDatosFiltrados());
             F.ShowDialog();
         }
 
@@ -311,21 +352,23 @@ namespace GestorGastos
             return clbCategorias.CheckedItems.Cast<TipoCuenta>().ToList();
         }
 
-        private void FiltrarDataGrid()
+        private List<Expense> ObtenerDatosFiltrados()
         {
             var seleccionadas = GetCategoriasSeleccionadas();
 
             if (seleccionadas.Count == 0)
             {
-                dgv.DataSource = _binding;
-                return;
+                return [.. _binding];
             }
+            else
+            {
+                return [.. _binding.Where(e => seleccionadas.Contains(e.TipoCuenta))];
+            }
+        }
 
-            var filtradas = _binding
-                .Where(e => seleccionadas.Contains(e.TipoCuenta))
-                .ToList();
-
-            dgv.DataSource = filtradas;
+        private void FiltrarDataGrid()
+        {
+            AsignarDataSource(ObtenerDatosFiltrados());
         }
 
         private void ClbCategorias_ItemCheck_1(object sender, ItemCheckEventArgs e)
